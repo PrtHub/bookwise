@@ -109,6 +109,19 @@ export default {
       backgroundImage: {
         pattern: "url('/images/pattern.webp')",
       },
+      keyframes: {
+        "appear": {
+				from: {
+					opacity: "0",
+				},
+				to: {
+					opacity: "1",
+				}
+			},
+      },
+      animation: {
+        "appear": "appear 1s ease-in-out",
+      }
     },
   },
   plugins: [require("tailwindcss-animate")],

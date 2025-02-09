@@ -7,6 +7,10 @@ const config = {
       privateKey: process.env.IMAGEKIT_PRIVATE_KEY as string,
       urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT as string,
     },
+    upstash: {
+      redisRestUrl: process.env.UPSTASH_REDIS_REST_URL as string,
+      redisRestToken: process.env.UPSTASH_REDIS_REST_TOKEN as string,
+    },
   },
 };
 
