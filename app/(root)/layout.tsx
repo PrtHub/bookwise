@@ -17,23 +17,22 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
     .where(session?.user?.id ? eq(users.id, session.user.id) : undefined)
     .limit(1);
 
+  // Update last activity date if it's not today
   if (
-    !user.length ||
-    user[0].lastActivityDate === new Date().toISOString().slice(0, 10)
+    user.length &&
+    user[0].lastActivityDate !== new Date().toISOString().slice(0, 10)
   ) {
-    return;
+    after(async () => {
+      if (!session?.user?.id) return;
+
+      await db
+        .update(users)
+        .set({
+          lastActivityDate: new Date().toISOString().slice(0, 10),
+        })
+        .where(eq(users.id, session.user.id));
+    });
   }
-
-  after(async () => {
-    if (!session?.user?.id) return;
-
-    await db
-      .update(users)
-      .set({
-        lastActivityDate: new Date().toISOString().slice(0, 10),
-      })
-      .where(eq(users.id, session.user.id));
-  });
 
   return (
     <main className="root-container">
