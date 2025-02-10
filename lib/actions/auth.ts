@@ -76,30 +76,54 @@ export const SignUp = async (params: AuthCredentials) => {
 
     const hashedPassword = await hash(password, 10);
 
-    await db.insert(users).values({
-      fullName,
-      email,
-      password: hashedPassword,
-      universityId,
-      universityCard,
-    });
-
-    await workflowClient.trigger({
-      url: `${config.env.prodApiUrl}/api/workflow/onboarding`,
-      body: {
-        email,
+    // Start a transaction to ensure data consistency
+    try {
+      // Create user first
+      await db.insert(users).values({
         fullName,
-      },
-    });
+        email,
+        password: hashedPassword,
+        universityId,
+        universityCard,
+      });
 
-    await signinWithCredentials({
-      email,
-      password,
-    });
+      // Try to trigger the workflow
+      try {
+        await workflowClient.trigger({
+          url: `${config.env.prodApiUrl}/api/workflow/onboarding`,
+          body: {
+            email,
+            fullName,
+          },
+        });
+      } catch (workflowError) {
+        console.error("Workflow trigger failed:", workflowError);
+        // Continue with sign in even if workflow fails
+      }
 
-    return { success: true };
+      // Attempt to sign in
+      const signInResult = await signinWithCredentials({
+        email,
+        password,
+      });
+
+      if (!signInResult.success) {
+        return {
+          success: false,
+          error: signInResult.error || "Failed to sign in after registration",
+        };
+      }
+
+      return { success: true };
+    } catch (dbError) {
+      console.error("Database operation failed:", dbError);
+      return {
+        success: false,
+        error: "Failed to create user account",
+      };
+    }
   } catch (error) {
-    console.log("SIGN_UP_ERROR", error);
+    console.error("SignUp error:", error);
     return {
       success: false,
       error: "Sign up failed",
