@@ -10,6 +10,10 @@ const config = {
     upstash: {
       redisRestUrl: process.env.UPSTASH_REDIS_REST_URL as string,
       redisRestToken: process.env.UPSTASH_REDIS_REST_TOKEN as string,
+      qstashUrl: process.env.QSTASH_URL as string,
+      qstashToken: process.env.QSTASH_TOKEN as string,
+      qstashCurrentSigningKey: process.env.QSTASH_CURRENT_SIGNING_KEY as string,
+      qstashNextSigningKey: process.env.QSTASH_NEXT_SIGNING_KEY as string,
     },
   },
 };
