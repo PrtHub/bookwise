@@ -15,10 +15,8 @@ export default async function Home() {
   const latestBooks = (await db
     .select()
     .from(books)
-    .limit(10)
+    .limit(13)
     .orderBy(desc(books.createdAt))) as Book[];
-
-    console.log(latestBooks);
 
   return (
     <>
