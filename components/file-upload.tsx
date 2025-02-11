@@ -12,7 +12,7 @@ interface FileUploadProps {
   folder?: string;
   variant?: "dark" | "light";
   onFileChange?: (file: File) => void;
-  value?: string;
+  value?: string | null;
 }
 
 const authenticator = async () => {
@@ -44,8 +44,8 @@ const FileUpload = ({
   value,
 }: FileUploadProps) => {
   const IkUploadRef = useRef(null);
-  const [file, setFile] = useState<{ filePath: string } | null>({
-    filePath: value ?? "",
+  const [file, setFile] = useState<{ filePath: string | null }>({
+    filePath: value ?? null,
   });
 
   const [progress, setProgress] = useState(0);
@@ -143,9 +143,9 @@ const FileUpload = ({
           height={20}
           className="object-contain"
         />
-       {!file && <p className={styles.placeholder}>{placeholder}</p>}
+       {!file.filePath && <p className={styles.placeholder}>{placeholder}</p>}
 
-        {file && (
+        {file.filePath && (
           <p className={cn("upload-filename", styles.text)}>{file.filePath}</p>
         )}
       </button>
@@ -158,7 +158,7 @@ const FileUpload = ({
         </div>
       )}
 
-      {file &&
+      {file.filePath &&
         (type === "image" ? (
           <IKImage
             alt={file.filePath}

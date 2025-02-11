@@ -11,8 +11,11 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import ColorPicker from "../color-picker"
 
-const BookForm = () => {
+interface Props extends Partial<Book> {
+  type: "CREATE" | "EDIT"
+}
 
+const BookForm = ({ type }: Props) => {
   const form = useForm({
     resolver: zodResolver(bookSchema),
     defaultValues: {
