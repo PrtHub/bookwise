@@ -11,7 +11,7 @@ const AdminLayout = async ({ children }: { children: React.ReactNode }) => {
   if (!session) redirect("/sign-in");
 
   return (
-    <main className="flex min-h-screen w-full flex-row">
+    <main className="flex min-h-screen w-full max-w-[1920px] mx-auto flex-row">
       <Sidebar session={session} />
 
       <div className="admin-container">
