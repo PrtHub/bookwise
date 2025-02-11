@@ -11,7 +11,7 @@ const CreateNewBook = () => {
       </Button>
 
       <section className="w-full">
-        <BookForm />
+        <BookForm type="CREATE"/>
       </section>
     </>
   )

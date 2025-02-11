@@ -1,21 +1,33 @@
-"use client"
+"use client";
 
-import { z } from "zod"
-import FileUpload from "@/components/file-upload"
-import { Button } from "@/components/ui/button"
-import { Form, FormField, FormItem, FormLabel, FormMessage, FormControl } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { bookSchema } from "@/lib/validation"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import ColorPicker from "../color-picker"
+import { z } from "zod";
+import FileUpload from "@/components/file-upload";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormControl,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { bookSchema } from "@/lib/validation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import ColorPicker from "../color-picker";
+import { createBook } from "@/lib/admin/action/book";
+import { toast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 interface Props extends Partial<Book> {
-  type: "CREATE" | "EDIT"
+  type: "CREATE" | "EDIT";
 }
 
 const BookForm = ({ type }: Props) => {
+  const router = useRouter();
   const form = useForm({
     resolver: zodResolver(bookSchema),
     defaultValues: {
@@ -30,11 +42,33 @@ const BookForm = ({ type }: Props) => {
       videoUrl: "",
       summary: "",
     },
-  })
+  });
 
-  const onSubmit= async (values: z.infer<typeof bookSchema>) => {
-     console.log(values)
-  }
+  const { isSubmitting } = form.formState;
+
+  const onSubmit = async (values: z.infer<typeof bookSchema>) => {
+    if (type === "CREATE") {
+      const result = await createBook(values);
+
+      if (result.success) {
+        toast({
+          title: "Success",
+          description: "You have successfully created a book.",
+          variant: "success",
+        });
+
+        router.push(`/admin/books/${result.data.id}`);
+      } else if (result.error) {
+        toast({
+          title: "Error",
+          description: result.error || "Book creation failed.",
+          variant: "destructive",
+        });
+      }
+    } else if (type === "EDIT") {
+      //
+    }
+  };
 
   return (
     <Form {...form}>
@@ -254,12 +288,19 @@ const BookForm = ({ type }: Props) => {
           )}
         />
 
-        <Button type="submit" className="book-form_btn text-white">
-          Add Book to Library
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="book-form_btn text-white"
+        >
+          {isSubmitting ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : null}
+          {type === "CREATE" ? "Add Book to Library" : "Update Book"}
         </Button>
       </form>
     </Form>
-  )
-}
+  );
+};
 
-export default BookForm
+export default BookForm;
