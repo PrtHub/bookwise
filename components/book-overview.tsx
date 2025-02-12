@@ -24,13 +24,12 @@ const BookOverview = async ({
   totalCopies,
   availableCopies,
 }: Props) => {
+  
   const [user] = await db
     .select()
     .from(users)
     .where(eq(users.id, userId))
     .limit(1);
-
-  if (!user) return null;
 
   const borrowingEligibility = {
     isEligible: availableCopies > 0 && user.status === "APPROVED",
@@ -44,17 +43,10 @@ const BookOverview = async ({
   const [borrowRecord] = await db
     .select({ status: borrowRecords.status })
     .from(borrowRecords)
-    .where(
-      and(
-        eq(borrowRecords.userId, userId),
-        eq(borrowRecords.bookId, id),
-      ),
-    )
+    .where(and(eq(borrowRecords.userId, userId), eq(borrowRecords.bookId, id)))
     .limit(1);
 
-  const isBookBorrowed = borrowRecord?.status === 'BORROWED';
-
-  console.log("IS BOOK BORROWED", isBookBorrowed);
+  const isBookBorrowed = borrowRecord?.status === "BORROWED";
 
   return (
     <section className="book-overview">
@@ -88,13 +80,16 @@ const BookOverview = async ({
         </div>
 
         <p className="book-description">{description}</p>
-
-        <BorrowBook
-          bookId={id}
-          userId={userId}
-          borrowingEligibility={borrowingEligibility}
-          isBookBorrowed={isBookBorrowed}
-        />
+        {user ? (
+          <BorrowBook
+            bookId={id}
+            userId={userId}
+            borrowingEligibility={borrowingEligibility}
+            isBookBorrowed={isBookBorrowed}
+          />
+        ) : (
+          <p className="text-light-200">Login to borrow the book</p>
+        )}
       </div>
 
       <div className="relative flex flex-1 justify-center">
