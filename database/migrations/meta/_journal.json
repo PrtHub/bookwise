@@ -15,6 +15,13 @@
       "when": 1739281861954,
       "tag": "0001_bouncy_chimera",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1739331052253,
+      "tag": "0002_stale_stardust",
+      "breakpoints": true
     }
   ]
 }

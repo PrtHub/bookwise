@@ -51,3 +51,16 @@ export const books = pgTable("books", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+
+export const borrowRecords = pgTable("borrow_records", {
+  id: uuid("id").notNull().primaryKey().defaultRandom().unique(),
+  bookId: uuid("book_id").references(() => books.id).notNull(),
+  userId: uuid("user_id").references(() => users.id).notNull(),
+  borrowDate: timestamp("borrow_date", { withTimezone: true }).notNull().defaultNow(),
+  returnDate: date("return_date"),
+  dueDate: date("due_date").notNull(),
+  status: BORROW_STATUS_ENUM("status").notNull().default("BORROWED"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});

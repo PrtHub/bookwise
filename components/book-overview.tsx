@@ -2,8 +2,18 @@ import Image from "next/image";
 import React from "react";
 import { Button } from "./ui/button";
 import BookCover from "./book-cover";
+import BorrowBook from "./borrow-book";
+import { db } from "@/database/drizzle";
+import { books, borrowRecords, users } from "@/database/schema";
+import { eq, and } from "drizzle-orm";
 
-const BookOverview = ({
+interface Props extends Book {
+  userId: string;
+}
+
+const BookOverview = async ({
+  id,
+  userId,
   title,
   author,
   genre,
@@ -12,8 +22,40 @@ const BookOverview = ({
   coverColor,
   description,
   totalCopies,
-  availableCopies
-}: Book) => {
+  availableCopies,
+}: Props) => {
+  const [user] = await db
+    .select()
+    .from(users)
+    .where(eq(users.id, userId))
+    .limit(1);
+
+  if (!user) return null;
+
+  const borrowingEligibility = {
+    isEligible: availableCopies > 0 && user.status === "APPROVED",
+    message:
+      availableCopies <= 0
+        ? "Book is not available"
+        : "You are not eligible to borrow this book",
+  };
+
+  // user can borrow multiple books but not the same book till it's returned
+  const [borrowRecord] = await db
+    .select({ status: borrowRecords.status })
+    .from(borrowRecords)
+    .where(
+      and(
+        eq(borrowRecords.userId, userId),
+        eq(borrowRecords.bookId, id),
+      ),
+    )
+    .limit(1);
+
+  const isBookBorrowed = borrowRecord?.status === 'BORROWED';
+
+  console.log("IS BOOK BORROWED", isBookBorrowed);
+
   return (
     <section className="book-overview">
       <div className="flex flex-col flex-1 gap-5">
@@ -47,10 +89,12 @@ const BookOverview = ({
 
         <p className="book-description">{description}</p>
 
-        <Button className="book-overview_btn">
-          <Image src="/icons/book.svg" alt="book" width={24} height={24} />
-          <p className="font-bebas-neue text-xl text-dark-100">Borrow Now</p>
-        </Button>
+        <BorrowBook
+          bookId={id}
+          userId={userId}
+          borrowingEligibility={borrowingEligibility}
+          isBookBorrowed={isBookBorrowed}
+        />
       </div>
 
       <div className="relative flex flex-1 justify-center">
