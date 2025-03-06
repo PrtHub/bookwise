@@ -1,6 +1,7 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+/* We can reference the same theme variables from globals.css */
+/* The theme configuration is defined in globals.css and will be available here */
 
 @layer components {
   .admin-container {
@@ -8,24 +9,24 @@
   }
 
   .back-btn {
-    @apply mb-10 w-fit border border-light-300 bg-white text-xs font-medium text-dark-200 hover:bg-light-300 !important;
+    @apply mb-10 w-fit border border-light-300 bg-white text-xs font-medium text-dark-200 hover:bg-light-300;
   }
 
   /* Confirmation Dialog */
   .confirm-trigger {
-    @apply font-semibold text-sm shadow-none hover:bg-opacity-70 w-full !important;
+    @apply font-semibold text-sm shadow-none hover:bg-opacity-70 w-full;
   }
 
   .confirm-approve {
-    @apply bg-green-100 text-green-800 hover:bg-green-100/70 !important;
+    @apply bg-green-100 text-green-800 hover:bg-green-100/70;
   }
 
   .confirm-reject {
-    @apply bg-red-100 text-red-800 hover:bg-red-100/70 !important;
+    @apply bg-red-100 text-red-800 hover:bg-red-100/70;
   }
 
   .confirm-content {
-    @apply sm:max-w-md flex flex-col items-center justify-center p-6 !important;
+    @apply sm:max-w-md flex flex-col items-center justify-center p-6;
   }
 
   .confirm-illustration {
@@ -37,21 +38,21 @@
   }
 
   .confirm-btn {
-    @apply w-full min-h-14 rounded-xl font-bold text-base text-light-800 !important;
+    @apply w-full min-h-14 rounded-xl font-bold text-base text-light-800;
   }
 
   /* Book Form */
   .book-form_input {
-    @apply min-h-14 border border-gray-100 bg-light-600 p-4 text-base font-semibold placeholder:font-normal placeholder:text-slate-500 !important;
+    @apply min-h-14 border border-gray-100 bg-light-600 p-4 text-base font-semibold placeholder:font-normal placeholder:text-slate-500;
   }
 
   .book-form_btn {
-    @apply min-h-14 w-full bg-primary-admin hover:bg-primary-admin/95 !important;
+    @apply min-h-14 w-full bg-primary-admin hover:bg-primary-admin/95;
   }
 
   /* Home Page */
   .view-btn {
-    @apply bg-light-300 rounded-md text-primary-admin font-semibold hover:bg-light-300/80 shadow-none !important;
+    @apply bg-light-300 rounded-md text-primary-admin font-semibold hover:bg-light-300/80 shadow-none;
   }
 
   .add-new-book_btn {
@@ -161,7 +162,7 @@
   }
 
   .admin-search_input {
-    @apply w-full border-0 shadow-none bg-transparent outline-none focus:outline-none focus:ring-0 focus:border-0 !important;
+    @apply w-full border-0 shadow-none bg-transparent outline-none focus:outline-none focus:ring-0 focus:border-0;
   }
 
   /* Sidebar */
